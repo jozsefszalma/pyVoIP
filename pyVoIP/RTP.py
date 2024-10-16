@@ -474,8 +474,9 @@ class RTPClient:
         return self.parse_pcmu(packet)
 
     def parse_pcmu(self, packet: RTPMessage) -> None:
+        #so ulaw was designed to compress 16bit audio into 8bit audio, it doesn't make sense to force it to use 8bit inputs/outputs
         data = audioop.ulaw2lin(packet.payload, 2)
-        data = audioop.bias(data, 1, 128)
+        #data = audioop.bias(data, 1, 128)
         self.pmin.write(packet.timestamp, data)
 
     def encodePCMU(self, packet: bytes) -> bytes:
@@ -488,7 +489,8 @@ class RTPClient:
         return self.encode_pcmu(packet)
 
     def encode_pcmu(self, packet: bytes) -> bytes:
-        packet = audioop.bias(packet, 1, -128)
+        #so ulaw was designed to compress 16bit audio into 8bit audio, it doesn't make sense to force it to use 8bit inputs/outputs
+        #packet = audioop.bias(packet, 1, -128)
         packet = audioop.lin2ulaw(packet, 2)
         return packet
 
